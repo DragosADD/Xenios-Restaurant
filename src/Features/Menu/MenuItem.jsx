@@ -1,22 +1,29 @@
+import { useContext, useEffect } from 'react';
 import Button from '../../UI/button/Button';
 import { formatCurrency } from '../../utils/helpers';
+import CartContext from '../../Storage/CartContext';
 
 function MenuItem({ recipe }) {
-  const { id, name, unitPrice, ingredients, soldOut, imageUrl } = recipe;
+  const { foodId, name, unitPrice, ingredients, soldOut, imageUrl } = recipe;
+  const cartCtx = useContext(CartContext);
+  const addRecipeHandler = () => {
+    cartCtx.addRecipe(recipe);
+    console.log(`ola`);
+  };
 
   return (
     <li className="flex gap-4 py-2">
       <img
         src={imageUrl}
         alt={name}
-        className={`h-24 ${soldOut ? 'opacity-70 grayscale' : ''}`}
+        className={`h-24 w-24 ${soldOut ? 'opacity-70 grayscale' : ''}`}
       />
       <div className="flex grow flex-col">
         <p className={`font-medium${soldOut ? ' grayscale' : ''}`}>{name}</p>
         <p
           className={`text-sm capitalize italic${soldOut ? ' grayscale' : ''}`}
         >
-          {ingredients.join(', ')}
+          {ingredients}
         </p>
         <div className="mt-auto flex  items-center justify-between">
           {!soldOut ? (
@@ -26,7 +33,11 @@ function MenuItem({ recipe }) {
               Sold out
             </p>
           )}
-          <Button type="addButton" disabled={soldOut ? true : false}>
+          <Button
+            type="addButton"
+            disabled={soldOut ? true : false}
+            onClick={addRecipeHandler}
+          >
             Add
           </Button>
         </div>

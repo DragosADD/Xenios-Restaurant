@@ -1,21 +1,49 @@
+import supabase from './supabase';
+
 const API_URL = 'https://react-fast-pizza-api.onrender.com/api';
 
 export async function getMenu() {
-  const res = await fetch(`${API_URL}/menu`);
-
-  // fetch won't throw error on 400 errors (e.g. when URL is wrong), so we need to do it manually. This will then go into the catch block, where the message is set
-  if (!res.ok) throw Error('Failed getting menu');
-
-  const { data } = await res.json();
-  return data;
+  const { data: Recipes, error } = await supabase.from('Recipes').select('*');
+  if (error) throw Error('Failed getting menu');
+  return Recipes;
 }
 
 export async function getOrder(id) {
-  const res = await fetch(`${API_URL}/order/${id}`);
-  if (!res.ok) throw Error(`Couldn't find order #${id}`);
+  const { data: order, errorOrder } = await supabase
+    .from('Orders')
+    .select('*')
+    .eq('id', id);
+  if (errorOrder) throw Error(`Failed getting the order with the id ${id}`);
+  const { data: items, errorItems } = await supabase
+    .from('OrderedItems')
+    .select('*')
+    .eq('order_id', id);
+  if (errorItems)
+    throw Error(
+      `Failed getting the the items that were order please contact us via the phone number in contact us`
+    );
 
-  const { data } = await res.json();
-  return data;
+  const itemPromises = items.map(async (item) => {
+    console.log(item);
+    const { data: orderItemWithRName, errorRecipe } = await supabase
+      .from('Recipes')
+      .select('name')
+      .eq('foodId', item.recipe_id);
+
+    if (errorRecipe)
+      throw Error(
+        `Failed creating the complete data for displaying the order.`
+      );
+
+    item.name = orderItemWithRName[0].name;
+    return item;
+  });
+
+  const updatedItems = await Promise.all(itemPromises);
+
+  order[0].cart = updatedItems;
+
+  return order;
 }
 
 export async function createOrder(newOrder) {

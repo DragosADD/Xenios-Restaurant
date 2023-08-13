@@ -1,8 +1,16 @@
+import { useContext } from 'react';
 import Button from '../../UI/button/Button';
 import { formatCurrency } from '../../utils/helpers';
+import CartContext from '../../Storage/CartContext';
 
 function CartItem({ item }) {
-  const { pizzaId, name, quantity, totalPrice } = item;
+  const { foodId, name, quantity, totalPrice } = item;
+
+  const cartCtx = useContext(CartContext);
+
+  const deleteOrderHandler = () => {
+    cartCtx.deleteRecipe(foodId);
+  };
 
   return (
     <li className="py-2 sm:flex sm:items-center sm:justify-between">
@@ -11,7 +19,9 @@ function CartItem({ item }) {
       </p>
       <div className="flex items-center justify-between sm:gap-6">
         <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
-        <Button type="deleteOrder">Delete</Button>
+        <Button type="deleteOrder" onClick={deleteOrderHandler}>
+          Delete
+        </Button>
       </div>
     </li>
   );
