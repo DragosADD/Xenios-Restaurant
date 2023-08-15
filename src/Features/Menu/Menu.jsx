@@ -4,6 +4,7 @@ import MenuItem from './MenuItem';
 
 function Menu() {
   const menu = useLoaderData();
+  console.log(menu);
   return (
     <ul className=" divide-y divide-amber-200 px-2">
       {menu.map((recipe) => {

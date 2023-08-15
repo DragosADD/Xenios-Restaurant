@@ -1,9 +1,8 @@
 import { useReducer } from 'react';
 import CartContext from './CartContext';
+import { calcPriceWithPriority } from '../utils/helpers';
+import { createOrder } from '../Services/apiRestaurant';
 
-function calcPriceWithPriority(updatedTotalOrder) {
-  return updatedTotalOrder + (updatedTotalOrder * 20) / 100;
-}
 function calcPriceOfRecipes(recipesDisplayed) {
   return recipesDisplayed.reduce(
     (accumulator, obj) => accumulator + obj.unitPrice,
@@ -12,10 +11,11 @@ function calcPriceOfRecipes(recipesDisplayed) {
 }
 
 const defaultCartState = {
+  hasPriority: false,
   totalAmountFromRecipes: 0,
-  totalOrder: 0,
   recipesInCart: [],
   recipesDisplayed: [],
+  dataForSending: [],
 };
 
 const CartReducer = (state, action) => {
@@ -26,6 +26,7 @@ const CartReducer = (state, action) => {
       recipesDisplayed: [],
       totalAmountFromRecipes: 0,
       totalOrder: 0,
+      dataForSending: [],
     };
   }
   if (action.type === 'ADD') {
@@ -52,15 +53,10 @@ const CartReducer = (state, action) => {
       });
     }
     const updatedTotalAmountFromRecipes = calcPriceOfRecipes(updatedRecipes);
-    console.log(updatedTotalAmountFromRecipes);
-    const updatedTotalOrder = calcPriceWithPriority(
-      updatedTotalAmountFromRecipes
-    );
 
     return {
       ...state,
       totalAmountFromRecipes: updatedTotalAmountFromRecipes,
-      totalOrder: updatedTotalOrder,
       recipesDisplayed: updateDisplayedItems,
       recipesInCart: updatedRecipes,
     };
@@ -73,16 +69,47 @@ const CartReducer = (state, action) => {
       (obj) => obj.foodId !== action.id
     );
     const updateTotalAmountFromRecipes = calcPriceOfRecipes(updatedRecipes);
-    const updatedTotalOrder = calcPriceWithPriority(
-      updateTotalAmountFromRecipes
-    );
 
     return {
       ...state,
       totalAmountFromRecipes: updateTotalAmountFromRecipes,
-      totalOrder: updatedTotalOrder,
       recipesDisplayed: updatedRecipesDisplayed,
       recipesInCart: updatedRecipes,
+    };
+  }
+  if (action.type === 'GIVEPRIORITY') {
+    return {
+      ...state,
+      hasPriority: !state.hasPriority,
+    };
+  }
+
+  if (action.type === 'ORDER') {
+    console.log(`fuck 1`);
+    const orderFood = state.recipesDisplayed.map((item) => {
+      return {
+        foodId: item.foodId,
+        quantity: item.quantity,
+        totalPrice: item.totalPrice,
+      };
+    });
+    const orderDetails = {
+      status: 'In procesare',
+      priority: state.hasPriority,
+      priorityPrice: state.hasPriority
+        ? calcPriceWithPriority(state.totalAmountFromRecipes) -
+          state.totalAmountFromRecipes
+        : 0,
+      orderPrice: state.totalAmountFromRecipes,
+      Total_price: state.hasPriority
+        ? calcPriceWithPriority(state.totalAmountFromRecipes)
+        : state.totalAmountFromRecipes,
+      estimatedDelivery: new Date(new Date().getTime() + 60 * 60 * 1000),
+    };
+
+    return {
+      ...state,
+      dataForSending: [orderFood, orderDetails],
     };
   }
 };
@@ -108,16 +135,20 @@ export default function CartProvider(props) {
   const orderRecipesHandler = (obj) => {
     dispatchCartAction({ type: 'ORDER', obj: obj });
   };
+  const changePriorityHandler = () => {
+    dispatchCartAction({ type: 'GIVEPRIORITY' });
+  };
 
   const cartContext = {
+    dataForSending: cartState.dataForSending,
     totalAmountFromRecipes: cartState.totalAmountFromRecipes,
-    totalOrder: cartState.totalOrder,
     recipesInCart: cartState.recipesInCart,
     recipesDisplayed: cartState.recipesDisplayed,
     addRecipe: addRecipeHandler,
     clearCart: clearCartHandler,
     deleteRecipe: deleteRecipeHandler,
     orderRecipes: orderRecipesHandler,
+    changePriority: changePriorityHandler,
   };
 
   return (

@@ -6,7 +6,7 @@ function CartOverview() {
   const cartContext = useContext(CartContext);
 
   const numberOfItems = cartContext.recipesInCart.length;
-  const totalOrder = cartContext.totalOrder;
+  // const totalOrder = cartContext.totalOrder;
 
   return (
     <div className=" bottom-0  left-0 right-0 flex h-12 items-center justify-between bg-cyan-950 py-2 pl-6 pr-10 text-sm uppercase text-green-300 sm:px-6 md:h-20 md:text-base">
@@ -16,7 +16,7 @@ function CartOverview() {
         ) : (
           <>
             <span>{numberOfItems} Items worth of</span>
-            <span>{totalOrder} RON</span>
+            {/* <span>{totalOrder} RON</span> */}
           </>
         )}
       </p>

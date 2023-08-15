@@ -8,7 +8,6 @@ function MenuItem({ recipe }) {
   const cartCtx = useContext(CartContext);
   const addRecipeHandler = () => {
     cartCtx.addRecipe(recipe);
-    console.log(`ola`);
   };
 
   return (

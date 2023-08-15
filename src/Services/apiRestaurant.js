@@ -46,21 +46,60 @@ export async function getOrder(id) {
   return order;
 }
 
-export async function createOrder(newOrder) {
-  try {
-    const res = await fetch(`${API_URL}/order`, {
-      method: 'POST',
-      body: JSON.stringify(newOrder),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+export async function createOrder(newOrder, itemsOfTheOrder) {
+  const { data: lastId, errorID } = await supabase
+    .from('Orders')
+    .select('MAX(price) as max_price');
+  if (errorID) throw Error(`Failed creating your order please contact us`);
 
-    if (!res.ok) throw Error();
-    const { data } = await res.json();
-    return data;
+  const {
+    status,
+    priority,
+    priorityPrice,
+    orderPrice,
+    Total_price,
+    estimatedDelivery,
+  } = newOrder;
+
+  try {
+    const { data: sentOrder, error } = await supabase
+      .from('Orders')
+      .insert([
+        {
+          id: lastId + 1,
+          status: status,
+          priority: priority,
+          priorityPrice: priorityPrice,
+          orderPrice,
+          Total_price: Total_price,
+          estimatedDelivery: estimatedDelivery,
+        },
+      ])
+      .select();
+
+    if (error) throw Error();
+
+    for (const item of itemsOfTheOrder) {
+      try {
+        const { data, error } = await supabase
+          .from('OrderedItems')
+          .insert([
+            {
+              recipe_id: item.foodId,
+              quantity: item.quantity,
+              totalPrice: item.totalPrice,
+              order_id: lastId + 1,
+            },
+          ])
+          .select();
+      } catch (error) {
+        throw Error(`Failed creating your order please contact us`);
+      }
+    }
+
+    return sentOrder;
   } catch {
-    throw Error('Failed creating your order');
+    throw Error('Failed creating your order please contact us');
   }
 }
 
