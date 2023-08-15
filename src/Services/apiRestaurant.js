@@ -50,7 +50,8 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
   const { data: lastId, errorID } = await supabase
     .from('Orders')
     .select('MAX(price) as max_price');
-  if (errorID) throw Error(`Failed creating your order please contact us`);
+
+  if (errorID) throw Error(`Failed getting the ID of the last order`);
 
   const {
     status,

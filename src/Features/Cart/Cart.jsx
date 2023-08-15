@@ -24,6 +24,7 @@ function Cart() {
     if (cartContext.dataForSending.length > 0) {
       const [orderFood, orderDetails] = cartContext.dataForSending;
       console.log(`hammer time`);
+      console.log(orderFood, orderDetails);
       cartSendData(orderFood, orderDetails);
       cartContext.clearCart;
     }
@@ -31,7 +32,6 @@ function Cart() {
 
   const orderHandler = (e) => {
     cartContext.orderRecipes();
-    // cartSendData(orderFood, orderDetails);
   };
 
   return (
@@ -100,10 +100,10 @@ function Cart() {
 
 export default Cart;
 
-export async function cartSendData(orderFood, orderDetails) {
+export async function cartSendData([orderFood, orderDetails]) {
   let id;
   try {
-    const data = createOrder(orderDetails, orderFood);
+    const data = await createOrder(orderDetails, orderFood);
     const { id: newOrder } = data;
     id = newOrder;
     console.log('Order created ', data);

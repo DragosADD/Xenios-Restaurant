@@ -1,5 +1,3 @@
-import CreateUser from '../Features/User/CreateUser';
-
 function Home() {
   return (
     <div className="my-10 px-4  text-center sm:my-16 ">
@@ -10,8 +8,6 @@ function Home() {
           Fresh ingredients for a healthier lifestyle.
         </span>
       </h1>
-
-      <CreateUser />
     </div>
   );
 }

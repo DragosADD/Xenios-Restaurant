@@ -19,7 +19,7 @@ function SearchOrder() {
       {checkOrder ? (
         <form className="text-sm font-normal" onSubmit={handleSumbit}>
           <input
-            className="focus: focus: w-32 rounded-full bg-lime-100 px-4 py-2 text-sm outline-none placeholder:text-lime-900 focus:ring focus:ring-amber-700 focus:ring-opacity-50 md:w-48"
+            className="focus: focus: ml-3 w-32 rounded-full bg-lime-100 px-4 py-2 text-sm outline-none placeholder:text-lime-900 focus:ring focus:ring-amber-700 focus:ring-opacity-50 md:w-48"
             placeholder="Order number"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
@@ -27,7 +27,7 @@ function SearchOrder() {
         </form>
       ) : (
         <button
-          className=" w-32 rounded-md bg-amber-700 p-1 text-sm text-amber-50 "
+          className=" ml-3 w-32 rounded-md bg-amber-700 p-1 text-sm text-amber-50 "
           onClick={() => setCheckOrder(true)}
         >
           Check order status
