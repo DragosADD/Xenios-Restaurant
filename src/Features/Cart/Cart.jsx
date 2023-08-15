@@ -20,17 +20,10 @@ function Cart() {
     cartContext.totalAmountFromRecipes
   );
 
-  useEffect(() => {
-    if (cartContext.dataForSending.length > 0) {
-      const [orderFood, orderDetails] = cartContext.dataForSending;
-      console.log(`hammer time`);
-      cartSendData(orderFood, orderDetails);
-      cartContext.clearCart;
-    }
-  }, [cartContext.dataForSending, cartContext.clearCart]);
-
   const orderHandler = (e) => {
     cartContext.orderRecipes();
+    const [food, order] = cartContext.dataForSending;
+    console.log(food, order) ///undefined, the cartContext.dataForSending is empty
     // cartSendData(orderFood, orderDetails);
   };
 
@@ -100,7 +93,8 @@ function Cart() {
 
 export default Cart;
 
-export async function cartSendData(orderFood, orderDetails) {
+export async function cartSendData({ orderFood, orderDetails }) {
+  console.log(`hellow from loader`);
   let id;
   try {
     const data = createOrder(orderDetails, orderFood);
