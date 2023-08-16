@@ -9,7 +9,7 @@ import AuthenticationPage, {
   action as logInOrSignUp,
 } from './Features/authentication/AuthenticationPage';
 import { action as logoutAction } from './Features/authentication/Logout';
-import { getUser } from './Utils/auth';
+import { checkAuthLoader, getUser } from './Utils/auth';
 
 const router = createBrowserRouter([
   {
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <Cart />,
-        // action: cartSendData,
+        loader: checkAuthLoader,
       },
       {
         path: '/order/:orderId',

@@ -1,3 +1,4 @@
+import { getUser } from '../Utils/auth';
 import supabase from './supabase';
 
 const API_URL = 'https://react-fast-pizza-api.onrender.com/api';
@@ -49,10 +50,13 @@ export async function getOrder(id) {
 export async function createOrder(newOrder, itemsOfTheOrder) {
   const { data: lastId, errorID } = await supabase
     .from('Orders')
-    .select('MAX(price) as max_price');
+    .select('id')
+    .order('id', { ascending: false })
+    .limit(1);
 
+  const newId = lastId[0].id + 1;
   if (errorID) throw Error(`Failed getting the ID of the last order`);
-
+  console.log(newOrder);
   const {
     status,
     priority,
@@ -62,23 +66,28 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
     estimatedDelivery,
   } = newOrder;
 
+  const user_id = await getUser();
+  console.log(user_id.id);
+
   try {
     const { data: sentOrder, error } = await supabase
       .from('Orders')
       .insert([
         {
-          id: lastId + 1,
+          id: newId,
           status: status,
           priority: priority,
           priorityPrice: priorityPrice,
           orderPrice,
           Total_price: Total_price,
           estimatedDelivery: estimatedDelivery,
+          user_id: user_id.id,
         },
       ])
       .select();
+    console.log(sentOrder);
 
-    if (error) throw Error();
+    if (error) throw Error(`Failed creating your order please contact us `);
 
     for (const item of itemsOfTheOrder) {
       try {
@@ -89,12 +98,12 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
               recipe_id: item.foodId,
               quantity: item.quantity,
               totalPrice: item.totalPrice,
-              order_id: lastId + 1,
+              order_id: newId,
             },
           ])
           .select();
       } catch (error) {
-        throw Error(`Failed creating your order please contact us`);
+        throw Error(`Failed creating pushing items please contact us`);
       }
     }
 

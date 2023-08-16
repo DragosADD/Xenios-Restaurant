@@ -1,4 +1,4 @@
-import { Link, redirect } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import LinkButton from '../../UI/button/LinkButton';
 import Button from '../../UI/button/Button';
 import CartItem from './CartItem';
@@ -10,6 +10,11 @@ import { createOrder } from '../../Services/apiRestaurant';
 function Cart() {
   const cartContext = useContext(CartContext);
   const [priority, setIsPriority] = useState(false);
+  const navigate = useNavigate();
+
+  const redirect = (id) => {
+    navigate(`/order/${id}`);
+  };
 
   const givePriorityHandler = () => {
     setIsPriority((prevPriority) => !prevPriority);
@@ -22,11 +27,9 @@ function Cart() {
 
   useEffect(() => {
     if (cartContext.dataForSending.length > 0) {
-      const [orderFood, orderDetails] = cartContext.dataForSending;
-      console.log(`hammer time`);
-      console.log(orderFood, orderDetails);
-      cartSendData(orderFood, orderDetails);
-      cartContext.clearCart;
+      const [order, orderItems] = cartContext.dataForSending;
+      cartSendData([order, orderItems], redirect);
+      cartContext.clearCart();
     }
   }, [cartContext.dataForSending, cartContext.clearCart]);
 
@@ -100,15 +103,16 @@ function Cart() {
 
 export default Cart;
 
-export async function cartSendData([orderFood, orderDetails]) {
+export async function cartSendData([order, orderItems], redirect) {
   let id;
   try {
-    const data = await createOrder(orderDetails, orderFood);
-    const { id: newOrder } = data;
-    id = newOrder;
-    console.log('Order created ', data);
+    const data = await createOrder(order, orderItems);
+    console.log(data);
+    const { id: newOrderId } = data[0];
+    id = newOrderId;
+    console.log(id);
   } catch (error) {
     console.error(`Error Creating order:`, error.message);
   }
-  return redirect(`/order/${id}`);
+  return redirect(id);
 }

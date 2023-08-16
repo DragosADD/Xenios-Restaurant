@@ -86,14 +86,14 @@ const CartReducer = (state, action) => {
 
   if (action.type === 'ORDER') {
     console.log(`fuck 1`);
-    const orderFood = state.recipesDisplayed.map((item) => {
+    const orderItems = state.recipesDisplayed.map((item) => {
       return {
         foodId: item.foodId,
         quantity: item.quantity,
         totalPrice: item.totalPrice,
       };
     });
-    const orderDetails = {
+    const order = {
       status: 'In procesare',
       priority: state.hasPriority,
       priorityPrice: state.hasPriority
@@ -109,7 +109,7 @@ const CartReducer = (state, action) => {
 
     return {
       ...state,
-      dataForSending: [orderFood, orderDetails],
+      dataForSending: [order, orderItems],
     };
   }
 };
