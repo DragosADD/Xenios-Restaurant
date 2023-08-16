@@ -10,6 +10,9 @@ import AuthenticationPage, {
 } from './Features/authentication/AuthenticationPage';
 import { action as logoutAction } from './Features/authentication/Logout';
 import { checkAuthLoader, getUser } from './Utils/auth';
+import OrderHistory, {
+  loader as historyLoader,
+} from './Features/HistoryOrders/OrderHistory';
 
 const router = createBrowserRouter([
   {
@@ -47,6 +50,12 @@ const router = createBrowserRouter([
       {
         path: '/logout',
         action: logoutAction,
+      },
+      {
+        path: '/history',
+        element: <OrderHistory />,
+        loader: historyLoader,
+        // action: logoutAction,
       },
     ],
   },

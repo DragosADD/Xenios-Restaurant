@@ -22,13 +22,22 @@ function Navigation() {
             Our Menu
           </NavLink>
         </li>
-        {!user && (
+        {!user ? (
           <li>
             <NavLink
               to="/login?mode=login"
               className="font-medium text-blue-600 hover:text-blue-800"
             >
               Login
+            </NavLink>
+          </li>
+        ) : (
+          <li>
+            <NavLink
+              to="/history"
+              className="font-medium text-blue-600 hover:text-blue-800"
+            >
+              History
             </NavLink>
           </li>
         )}

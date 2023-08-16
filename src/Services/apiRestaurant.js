@@ -25,7 +25,6 @@ export async function getOrder(id) {
     );
 
   const itemPromises = items.map(async (item) => {
-    console.log(item);
     const { data: orderItemWithRName, errorRecipe } = await supabase
       .from('Recipes')
       .select('name')
@@ -56,7 +55,6 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
 
   const newId = lastId[0].id + 1;
   if (errorID) throw Error(`Failed getting the ID of the last order`);
-  console.log(newOrder);
   const {
     status,
     priority,
@@ -67,7 +65,6 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
   } = newOrder;
 
   const user_id = await getUser();
-  console.log(user_id.id);
 
   try {
     const { data: sentOrder, error } = await supabase
@@ -85,7 +82,6 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
         },
       ])
       .select();
-    console.log(sentOrder);
 
     if (error) throw Error(`Failed creating your order please contact us `);
 
@@ -111,6 +107,17 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
   } catch {
     throw Error('Failed creating your order please contact us');
   }
+}
+
+export async function getHistory(userId) {
+  const { data, error } = await supabase
+    .from('Orders')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) throw Error(`Failed to fetch orders`);
+
+  return data;
 }
 
 export async function updateOrder(id, updateObj) {
