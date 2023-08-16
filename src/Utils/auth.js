@@ -21,7 +21,7 @@ export async function sessionLoader() {
 
 export async function checkAuthLoader() {
   const session = await sessionLoader();
-  console.log(session);
+
   if (!session.data.session) {
     return redirect('/login');
   } else {

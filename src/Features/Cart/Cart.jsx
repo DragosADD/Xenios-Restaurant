@@ -107,10 +107,8 @@ export async function cartSendData([order, orderItems], redirect) {
   let id;
   try {
     const data = await createOrder(order, orderItems);
-    console.log(data);
     const { id: newOrderId } = data[0];
     id = newOrderId;
-    console.log(id);
   } catch (error) {
     console.error(`Error Creating order:`, error.message);
   }

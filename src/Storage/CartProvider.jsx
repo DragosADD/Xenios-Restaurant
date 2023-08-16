@@ -85,7 +85,6 @@ const CartReducer = (state, action) => {
   }
 
   if (action.type === 'ORDER') {
-    console.log(`fuck 1`);
     const orderItems = state.recipesDisplayed.map((item) => {
       return {
         foodId: item.foodId,
@@ -93,6 +92,7 @@ const CartReducer = (state, action) => {
         totalPrice: item.totalPrice,
       };
     });
+    const timeNow = new Date(new Date().getTime() + 60 * 60 * 4000);
     const order = {
       status: 'In procesare',
       priority: state.hasPriority,
@@ -104,7 +104,7 @@ const CartReducer = (state, action) => {
       Total_price: state.hasPriority
         ? calcPriceWithPriority(state.totalAmountFromRecipes)
         : state.totalAmountFromRecipes,
-      estimatedDelivery: new Date(new Date().getTime() + 60 * 60 * 1000),
+      estimatedDelivery: timeNow,
     };
 
     return {

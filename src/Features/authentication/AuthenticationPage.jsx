@@ -18,6 +18,7 @@ export async function action({ request }) {
     email: data.get('email'),
     password: data.get('password'),
     name: data.get('name'),
+    tel: data.get('tel'),
   };
   let response;
   if (mode === 'signup') response = await signup(authData);
@@ -25,15 +26,6 @@ export async function action({ request }) {
   if (mode === 'login') response = await login(authData);
 
   console.log(response);
-
-  // const {
-  //   session: { access_token: token },
-  //   user: {
-  //     user_metadata: { name: userName },
-  //   },
-  // } = response;
-  // const token = await getUser();
-  // console.log(token);
 
   return redirect('/');
 }
