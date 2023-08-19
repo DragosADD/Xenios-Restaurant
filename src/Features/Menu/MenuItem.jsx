@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import Button from '../../UI/button/Button';
 import { formatCurrency } from '../../utils/helpers';
 import CartContext from '../../Storage/CartContext';
+import { useRouteLoaderData } from 'react-router-dom';
 
 function MenuItem({ recipe }) {
   const { foodId, name, unitPrice, ingredients, soldOut, imageUrl } = recipe;
@@ -9,6 +10,11 @@ function MenuItem({ recipe }) {
   const addRecipeHandler = () => {
     cartCtx.addRecipe(recipe);
   };
+
+  const user = useRouteLoaderData('root');
+  // console.log(user.role);
+
+  const removeRecipeFromMenu = () => {};
 
   return (
     <li className="flex gap-4 py-2">
@@ -32,13 +38,23 @@ function MenuItem({ recipe }) {
               Sold out
             </p>
           )}
-          <Button
-            type="addButton"
-            disabled={soldOut ? true : false}
-            onClick={addRecipeHandler}
-          >
-            Add
-          </Button>
+          {user?.role !== 'service_role' ? (
+            <Button
+              type="addButton"
+              disabled={soldOut ? true : false}
+              onClick={addRecipeHandler}
+            >
+              Add
+            </Button>
+          ) : (
+            <Button
+              type="addButton"
+              disabled={soldOut ? true : false}
+              onClick={removeRecipeFromMenu}
+            >
+              remove
+            </Button>
+          )}
         </div>
       </div>
     </li>

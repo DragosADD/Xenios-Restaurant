@@ -2,6 +2,7 @@ import { NavLink, useRouteLoaderData } from 'react-router-dom';
 
 function Navigation() {
   const user = useRouteLoaderData('root');
+
   return (
     <nav className="flex justify-center py-4">
       <ul className="flex space-x-6">
@@ -22,6 +23,7 @@ function Navigation() {
             Our Menu
           </NavLink>
         </li>
+
         {!user ? (
           <li>
             <NavLink
@@ -29,6 +31,15 @@ function Navigation() {
               className="font-medium text-blue-600 hover:text-blue-800"
             >
               Login
+            </NavLink>
+          </li>
+        ) : user.role === 'service_role' ? (
+          <li>
+            <NavLink
+              to="/orders/edit"
+              className="font-medium text-blue-600 hover:text-blue-800"
+            >
+              Ongoing orders
             </NavLink>
           </li>
         ) : (
