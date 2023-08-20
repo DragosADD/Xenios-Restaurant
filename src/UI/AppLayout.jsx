@@ -8,7 +8,6 @@ function AppLayout() {
   const isLoading = navigation.state === 'loading';
 
   const user = useRouteLoaderData('root');
-  console.log(user?.role);
 
   return (
     <div className="grid h-screen grid-rows-[auto_1fr_auto]">
@@ -19,8 +18,7 @@ function AppLayout() {
           <Outlet />
         </main>
       </div>
-      {user?.role !== 'service_role'}
-      <CartOverview />
+      {user?.role !== 'service_role' && <CartOverview />}
     </div>
   );
 }

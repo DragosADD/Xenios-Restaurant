@@ -120,19 +120,103 @@ export async function getHistory(userId) {
   return data;
 }
 
-export async function updateOrder(id, updateObj) {
+export async function removeRecipeFromMenu(id) {
   try {
-    const res = await fetch(`${API_URL}/order/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(updateObj),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const { data, error } = await supabase
+      .from('Recipes')
+      .update({ IsOnMenu: false })
+      .eq('foodId', id);
+    if (error) throw Error();
+    window.location.reload();
+    return data;
+  } catch (error) {
+    throw Error('Failed updating your order' + error.message);
+  }
+}
 
-    if (!res.ok) throw Error();
-    // We don't need the data, so we don't return anything
-  } catch (err) {
-    throw Error('Failed updating your order');
+export async function addBackRecipeFromOnMenu(id) {
+  try {
+    const { data, error } = await supabase
+      .from('Recipes')
+      .update({ IsOnMenu: true })
+      .eq('foodId', id);
+    if (error) throw Error();
+    window.location.reload();
+    return data;
+  } catch (error) {
+    throw Error('Failed updating your order' + error.message);
+  }
+}
+
+export async function updateRecipe(updatedData) {
+  const { foodId, soldOut, ingredients, unitPrice } = updatedData;
+  try {
+    const { data, error } = await supabase
+      .from('Recipes')
+      .update({
+        soldOut: soldOut,
+        ingredients: ingredients,
+        unitPrice: unitPrice,
+      })
+      .eq('foodId', foodId);
+    if (error) throw Error();
+    return data;
+  } catch (error) {
+    throw Error('Failed updating your order' + error.message);
+  }
+}
+
+export async function uploadRecipe(data) {
+  const requiredFields = ['name', 'unitPrice', 'ingredients', 'imageUrl'];
+
+  for (const field of requiredFields) {
+    if (
+      !(field in data) ||
+      data[field] === null ||
+      data[field] === undefined ||
+      data[field] === ''
+    ) {
+      throw new Error(`Required field "${field}" is missing or empty`);
+    }
+  }
+
+  if (!('soldOut' in data)) {
+    throw new Error('Required field "soldOut" is missing');
+  }
+
+  if (!('IsOnMenu' in data)) {
+    throw new Error('Required field "IsOnMenu" is missing');
+  }
+
+  const { data: lastId, errorID } = await supabase
+    .from('Recipes')
+    .select('foodId')
+    .order('foodId', { ascending: false })
+    .limit(1);
+
+  if (errorID) throw new Error('Failed getting the last Recipe Added');
+
+  const actualLastId = lastId[0].foodId + 19;
+
+  const { name, unitPrice, ingredients, soldOut, imageUrl, IsOnMenu } = data;
+  try {
+    const { data, error } = await supabase
+      .from('Recipes')
+      .insert([
+        {
+          foodId: actualLastId,
+          name: name,
+          unitPrice: unitPrice,
+          ingredients: ingredients,
+          soldOut: soldOut,
+          imageUrl: imageUrl,
+          IsOnMenu: IsOnMenu,
+        },
+      ])
+      .select();
+    if (error) throw Error();
+    return data;
+  } catch (error) {
+    throw Error('Failed updating your order' + error.message);
   }
 }
