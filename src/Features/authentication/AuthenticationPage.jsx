@@ -1,7 +1,6 @@
 import { json, redirect } from 'react-router-dom';
 import AuthForm from './AuthForm';
 import { login, signup } from '../../Services/apiAuth';
-import { getUser } from '../../Utils/auth';
 
 export default function AuthenticationPage() {
   return <AuthForm></AuthForm>;

@@ -6,7 +6,10 @@ import Menu, {
   action as menuEditAndAdd,
 } from './Features/Menu/Menu';
 import Cart from './Features/Cart/Cart';
-import Order, { loader as orderLoader } from './Features/Order/Order';
+import Order, {
+  action as adminOrder,
+  loader as orderLoader,
+} from './Features/Order/Order';
 import AppLayout from './UI/AppLayout';
 import AuthenticationPage, {
   action as logInOrSignUp,
@@ -16,6 +19,10 @@ import { checkAuthLoader, getUser } from './Utils/auth';
 import OrderHistory, {
   loader as historyLoader,
 } from './Features/HistoryOrders/OrderHistory';
+import AdminOrderHistory, {
+  action as changeQuickStatus,
+  loader as adminOrderHistory,
+} from './Features/HistoryOrders/AdminOrderHistory';
 
 const router = createBrowserRouter([
   {
@@ -50,16 +57,22 @@ const router = createBrowserRouter([
         element: <Order />,
         loader: orderLoader,
         errorElement: <Error />,
+        action: adminOrder,
       },
       {
         path: '/logout',
         action: logoutAction,
       },
       {
+        path: '/orders/edit',
+        element: <AdminOrderHistory />,
+        loader: adminOrderHistory,
+        action: changeQuickStatus,
+      },
+      {
         path: '/history',
         element: <OrderHistory />,
         loader: historyLoader,
-        // action: logoutAction,
       },
     ],
   },

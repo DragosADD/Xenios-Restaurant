@@ -4,9 +4,16 @@ import {
   formatCurrency,
   formatDate,
 } from '../../utils/helpers';
-import { useNavigate } from 'react-router-dom/dist';
+import {
+  Form,
+  useLoaderData,
+  useNavigate,
+  useRouteLoaderData,
+} from 'react-router-dom/dist';
+import Button from '../../UI/button/Button';
 
-export default function HistoryItem({ order }) {
+export default function HistoryItem({ order, isEditing, showHistory }) {
+  // const user = useRouteLoaderData('root').role === `service_role`;
   const {
     id,
     Total_price,
@@ -25,8 +32,20 @@ export default function HistoryItem({ order }) {
     navigation(`/order/${id}`);
   };
 
+  const base =
+    'rounded-full px-3 py-1 text-sm font-semibold uppercase tracking-wide';
+
+  const style = {
+    Processing: `${base} text-cyan-500`,
+    Delivered: `${base} text-green-500`,
+    Cancelled: `${base} text-stone-600`,
+  };
+
   return (
-    <li className=" bg-stone-200" onClick={redirectHandler}>
+    <li
+      className="cursor-pointer bg-stone-200 hover:bg-stone-500"
+      onClick={redirectHandler}
+    >
       <div className="flex flex-wrap items-center justify-between gap-2 px-6 py-5 ">
         <h2 className="text-lg font-semibold">Order# {id} status</h2>
         <div className="space-x-2">
@@ -35,12 +54,14 @@ export default function HistoryItem({ order }) {
               Priority
             </span>
           )}
-          <span className="rounded-full px-3 py-1 text-sm font-semibold uppercase tracking-wide text-green-500">
+          <span
+            className={style[status === 'In process' ? 'Processing' : status]}
+          >
             {status} order
           </span>
         </div>
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-1">
+      <div className="flex flex-wrap items-center justify-between gap-2  px-6 py-1">
         <p className="font-medium">
           {deliveryIn >= 0
             ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
@@ -50,7 +71,7 @@ export default function HistoryItem({ order }) {
           (Estimated delivery: {formatDate(estimatedDelivery)})
         </p>
       </div>
-      <div className="space-y-2 bg-stone-200 px-6 py-1 pb-3">
+      <div className="space-y-2 px-6 py-1 pb-3">
         {priority && (
           <p className="text-sm font-medium">
             Price Order: {formatCurrency(orderPrice)}
@@ -61,9 +82,23 @@ export default function HistoryItem({ order }) {
             Price priority: {formatCurrency(priorityPrice)}
           </p>
         )}
-        <p className="font-bold">
-          Total Price of the order: {formatCurrency(Total_price)}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="font-bold">
+            Total Price of the order: {formatCurrency(Total_price)}
+          </p>
+          {isEditing && status !== 'Cancelled' && status !== 'Delivered' && (
+            <Form method="POST">
+              <input
+                type="hidden"
+                id="status"
+                name="status"
+                value={'Delivered'}
+              />
+              <input type="hidden" id="id" name="id" value={id} />
+              <Button type="submit">✔</Button>
+            </Form>
+          )}
+        </div>
       </div>
     </li>
   );

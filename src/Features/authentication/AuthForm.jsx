@@ -43,7 +43,7 @@ function AuthForm() {
               ? `Don't have an account? Create new user here.`
               : 'Already have an account? Log in here!'}
           </Button>
-          <Button type="primary" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Save'}
           </Button>
         </Form>

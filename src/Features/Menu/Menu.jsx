@@ -35,7 +35,7 @@ function Menu() {
   return (
     <>
       <div className="flex justify-center">
-        {user.role === 'service_role' && (
+        {user?.role === 'service_role' && (
           <button
             className={`my-2 p-2 font-semibold ${
               showAllRecipes

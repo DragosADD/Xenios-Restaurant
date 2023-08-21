@@ -11,6 +11,7 @@ function Button({ children, disabled, to, type, onClick }) {
     clearButton: `rounded-full ml-2 p-1 border-2 border-transparent hover:border-cyan-500 text-cyan-800 hover:bg-lime-100 focus:bg-lime-100 focus:outline-none focus:ring focus:ring-lime-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:cursor-not-allowed disabled:bg-slate-400 disabled:text-cyan-900`,
     edit: `${base} px-3 py-2 mr-3`,
     button: `rounded-full ml-2 p-1 border-2 border-transparent hover:border-cyan-500 text-cyan-800 hover:bg-lime-100 focus:bg-lime-100 focus:outline-none focus:ring focus:ring-lime-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:cursor-not-allowed disabled:bg-slate-400 disabled:text-cyan-900`,
+    submit: `${base} px-3 py-2 mt-2`,
   };
   if (to)
     return (
@@ -23,7 +24,7 @@ function Button({ children, disabled, to, type, onClick }) {
       disabled={disabled}
       className={styles[type]}
       onClick={onClick}
-      type={type === 'button' ? `button` : 'submit'}
+      type={type === 'submit' ? 'submit' : `button`}
     >
       {children}
     </button>

@@ -110,6 +110,13 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
 }
 
 export async function getHistory(userId) {
+  if (userId === 'all') {
+    const { data, error } = await supabase.from('Orders').select('*');
+
+    if (error) throw Error(`Failed to fetch orders`);
+
+    return data;
+  }
   const { data, error } = await supabase
     .from('Orders')
     .select('*')
@@ -199,24 +206,53 @@ export async function uploadRecipe(data) {
   const actualLastId = lastId[0].foodId + 19;
 
   const { name, unitPrice, ingredients, soldOut, imageUrl, IsOnMenu } = data;
-  try {
-    const { data, error } = await supabase
-      .from('Recipes')
-      .insert([
-        {
-          foodId: actualLastId,
-          name: name,
-          unitPrice: unitPrice,
-          ingredients: ingredients,
-          soldOut: soldOut,
-          imageUrl: imageUrl,
-          IsOnMenu: IsOnMenu,
-        },
-      ])
-      .select();
-    if (error) throw Error();
-    return data;
-  } catch (error) {
-    throw Error('Failed updating your order' + error.message);
-  }
+
+  const { data: final, error } = await supabase
+    .from('Recipes')
+    .insert([
+      {
+        foodId: actualLastId,
+        name: name,
+        unitPrice: unitPrice,
+        ingredients: ingredients,
+        soldOut: soldOut,
+        imageUrl: imageUrl,
+        IsOnMenu: IsOnMenu,
+      },
+    ])
+    .select();
+  if (error) throw Error('Failed updating your order' + error.message);
+  return final;
+}
+
+export async function updateStatusPriorityRecipe(newData) {
+  const { id, status, priority, orderPrice, priorityPrice, Total_price } =
+    newData;
+  const { data: updatedData, error } = await supabase
+    .from('Orders')
+    .update({
+      status: status,
+      priority: priority,
+      orderPrice: orderPrice,
+      priorityPrice: priorityPrice,
+      Total_price: Total_price,
+    })
+    .eq('id', id)
+    .select();
+  if (error)
+    throw new Error(`Failed updating the status and priority of the order`);
+  return updatedData;
+}
+
+export async function updateStatusToCompleted(id) {
+  const { data: updatedOrder, error } = await supabase
+    .from('Orders')
+    .update({
+      status: 'Delivered',
+    })
+    .eq('id', id)
+    .select();
+  if (error) throw new Error(`Unable to update status` + error.message);
+
+  return updatedOrder;
 }

@@ -94,7 +94,7 @@ const CartReducer = (state, action) => {
     });
     const timeNow = new Date(new Date().getTime() + 60 * 60 * 4000);
     const order = {
-      status: 'In procesare',
+      status: 'In process',
       priority: state.hasPriority,
       priorityPrice: state.hasPriority
         ? calcPriceWithPriority(state.totalAmountFromRecipes) -
