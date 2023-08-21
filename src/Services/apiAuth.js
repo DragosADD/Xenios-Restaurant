@@ -7,17 +7,18 @@ export async function login({ email, password }) {
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
   return data;
 }
 
-export async function signup({ name, email, password }) {
+export async function signup({ name, email, password, phone, address }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
         name,
+        address,
+        phone,
       },
     },
   });

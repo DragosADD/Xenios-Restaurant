@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import CartContext from '../../Storage/CartContext';
+import { formatCurrency } from '../../utils/helpers';
 
 function CartOverview() {
   const cartContext = useContext(CartContext);
 
   const numberOfItems = cartContext.recipesInCart.length;
+
   // const totalOrder = cartContext.totalOrder;
 
   return (
@@ -16,7 +18,14 @@ function CartOverview() {
         ) : (
           <>
             <span>{numberOfItems} Items worth of</span>
-            {/* <span>{totalOrder} RON</span> */}
+            <span>
+              {cartContext.hasPriority
+                ? formatCurrency(
+                    cartContext.totalAmountFromRecipes +
+                      (cartContext.totalAmountFromRecipes * 20) / 100
+                  )
+                : formatCurrency(cartContext.totalAmountFromRecipes)}
+            </span>
           </>
         )}
       </p>

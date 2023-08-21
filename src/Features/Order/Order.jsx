@@ -110,6 +110,7 @@ export async function loader({ params }) {
 export async function action({ request }) {
   const data = await request.formData();
   const user = await getUser();
+
   if (user.role !== 'service_role') {
     throw new Error(`You are not an admin, you cannot proceed.`);
   }

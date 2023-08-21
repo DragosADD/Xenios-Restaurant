@@ -31,6 +31,12 @@ function AuthForm() {
               <input id="tel" type="tel" name="tel" required />
             </div>
           )}
+          {!isLogin && (
+            <div className="my-2 flex flex-col">
+              <label>Address, make sure that it is written correctly</label>
+              <input id="address" type="address" name="address" required />
+            </div>
+          )}
           <div className="my-2 flex flex-col">
             <label>Password</label>
             <input id="password" type="password" name="password" required />

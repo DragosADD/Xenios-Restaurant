@@ -64,7 +64,12 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
     estimatedDelivery,
   } = newOrder;
 
-  const user_id = await getUser();
+  const user = await getUser();
+
+  const {
+    id: user_id,
+    user_metadata: { address, phone },
+  } = user;
 
   try {
     const { data: sentOrder, error } = await supabase
@@ -78,7 +83,9 @@ export async function createOrder(newOrder, itemsOfTheOrder) {
           orderPrice,
           Total_price: Total_price,
           estimatedDelivery: estimatedDelivery,
-          user_id: user_id.id,
+          user_id: user_id,
+          address: address,
+          mobileNumber: phone,
         },
       ])
       .select();

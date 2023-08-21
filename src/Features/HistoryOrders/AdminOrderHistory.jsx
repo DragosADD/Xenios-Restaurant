@@ -42,15 +42,16 @@ export default function AdminOrderHistory() {
         order={order}
         isEditing={true}
         showHistory={showHistory}
+        showingDetails={true}
       />
     );
   });
   const ShowTodayOrdersInactive = todayOrdersInactive?.map((order) => {
-    return <HistoryItem key={order.id} order={order} />;
+    return <HistoryItem key={order.id} order={order} showingDetails={true} />;
   });
 
   const allOrderHistory = orders?.map((order) => {
-    return <HistoryItem key={order.id} order={order} />;
+    return <HistoryItem key={order.id} order={order} showingDetails={true} />;
   });
 
   return (

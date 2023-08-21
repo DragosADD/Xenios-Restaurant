@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import CartContext from '../../Storage/CartContext';
 import { calcPriceWithPriority, formatCurrency } from '../../utils/helpers';
 import { createOrder } from '../../Services/apiRestaurant';
+import { getUser } from '../../Utils/auth';
 
 function Cart() {
   const cartContext = useContext(CartContext);
@@ -105,6 +106,7 @@ export default Cart;
 
 export async function cartSendData([order, orderItems], redirect) {
   let id;
+  console.log(id);
   try {
     const data = await createOrder(order, orderItems);
     const { id: newOrderId } = data[0];

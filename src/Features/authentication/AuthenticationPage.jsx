@@ -17,7 +17,8 @@ export async function action({ request }) {
     email: data.get('email'),
     password: data.get('password'),
     name: data.get('name'),
-    tel: data.get('tel'),
+    phone: data.get('tel'),
+    address: data.get('address'),
   };
   let response;
   if (mode === 'signup') response = await signup(authData);

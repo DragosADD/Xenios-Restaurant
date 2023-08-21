@@ -12,7 +12,7 @@ import {
 } from 'react-router-dom/dist';
 import Button from '../../UI/button/Button';
 
-export default function HistoryItem({ order, isEditing, showHistory }) {
+export default function HistoryItem({ order, isEditing, showingDetails }) {
   // const user = useRouteLoaderData('root').role === `service_role`;
   const {
     id,
@@ -22,6 +22,8 @@ export default function HistoryItem({ order, isEditing, showHistory }) {
     priority,
     priorityPrice,
     status,
+    address,
+    mobileNumber,
   } = order;
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
@@ -61,6 +63,17 @@ export default function HistoryItem({ order, isEditing, showHistory }) {
           </span>
         </div>
       </div>
+      {showingDetails && (
+        <div className="my-2 px-6 py-1 text-cyan-800">
+          <p className="text-sm">
+            Address: {address ? `${address}` : `Cient has to be called`}
+          </p>
+          <p className="text-sm">
+            Phone: {mobileNumber ? `${mobileNumber}` : `No phone number`}
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center justify-between gap-2  px-6 py-1">
         <p className="font-medium">
           {deliveryIn >= 0
